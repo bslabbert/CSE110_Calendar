@@ -11,7 +11,24 @@ function invertIntervals(intervals = [ [0, -1] ], initialInterval = [0, 1440]) {
   }, [initialInterval]);
 }
 
+function hasUndefinedIntervals(intervals) {
+  if (intervals) {
+    for (let i = 0; i < intervals.length; i++) {
+      if (typeof(intervals[i])  == 'undefined'); {
+        return false;
+      }
+    }
+  }
+  else {
+    return false;
+  }
+  return true;
+}
+
 function mergeIntervals(intervals) {
+  // if hasUndefinedIntervals(intervals) {
+  //   return;
+  // }
   intervals.sort((a, b) => a[0] - b[0]);
   var stack = [];
   stack.push(intervals[0]);
@@ -47,29 +64,27 @@ function findAvailableTimes(events, weeks = 2) {
 
   intervals.sort((a, b) => a[2].getTime() - b[2].getTime());
 
-  var next = intervals[0][2].getDay();
-  var prev = intervals[0][2].getDay();
-  var curr = [intervals[0]];
+  var next = intervals[0][2].getDate();
+  var prev = intervals[0][2].getDate();
+  var curr = [];
+  var dailyMap = new Map();
 
   while (intervals.length) {
     while (next && next == prev) {
       curr.push(intervals[0]);
       intervals.shift()
-      next = intervals[0] ? intervals[0][2].getDay() : undefined;
+      next = intervals[0] ? intervals[0][2].getDate() : undefined;
     }
 
     var found = invertIntervals(mergeIntervals(curr));
-    var dayMap = new Map();
-    dayMap.set(curr[0][2].getMonth() + ", " + curr[0][2].getDate(), [])
+    dailyMap.set(curr[0][2].getMonth() + ", " + curr[0][2].getDate(), [])
     for (const intr of found) {
-      dayMap.get(curr[0][2].getMonth() + ", " + curr[0][2].getDate()).push(intr);
+      dailyMap.get(curr[0][2].getMonth() + ", " + curr[0][2].getDate()).push(intr);
     }
-    prev = intervals[0] ? intervals[0][2].getDay() : undefined;
+    prev = intervals[0] ? intervals[0][2].getDate() : undefined;
     curr = [];
-    // console.log(dayMap);
-    // console.log(free);
   }
-  return dayMap;
+  return dailyMap;
 }
 
 module.exports = { mergeIntervals, invertIntervals, findAvailableTimes };
