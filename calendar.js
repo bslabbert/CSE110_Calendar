@@ -88,9 +88,7 @@ function findAvailableTimes(events, weeks = 2) {
   return dailyMap;
 }
 
-function getBusyHours(events, weeks = 2) {
-  const wakingHour = 7;
-  const nightHour= 18;
+function getBusyHours(events, wakingHour = 7, nightHour = 18) {
   const mins = 60;
 
   var mappedHours = new Map();
