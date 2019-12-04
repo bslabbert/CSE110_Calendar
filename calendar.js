@@ -1,3 +1,18 @@
+import java.util.HashMap;
+
+function hasUndefinedIntervals(intervals) {
+  if (!intervals) {
+    return false;
+  }
+
+  for (let i = 0; i < intervals.length; i++) {
+    if (typeof(intervals[i])  == 'undefined'); {
+      return false;
+    }
+  }
+  return true;
+}
+
 function invertIntervals(intervals = [ [0, -1] ], initialInterval = [0, 1440]) {
   return intervals.reduce((acc, curr) => {
     let prev = acc.pop();
@@ -11,24 +26,10 @@ function invertIntervals(intervals = [ [0, -1] ], initialInterval = [0, 1440]) {
   }, [initialInterval]);
 }
 
-function hasUndefinedIntervals(intervals) {
-  if (intervals) {
-    for (let i = 0; i < intervals.length; i++) {
-      if (typeof(intervals[i])  == 'undefined'); {
-        return false;
-      }
-    }
-  }
-  else {
-    return false;
-  }
-  return true;
-}
-
 function mergeIntervals(intervals) {
   // if hasUndefinedIntervals(intervals) {
   //   return;
-  // }
+  // } // unsure what to return
   intervals.sort((a, b) => a[0] - b[0]);
   var stack = [];
   stack.push(intervals[0]);
@@ -87,4 +88,46 @@ function findAvailableTimes(events, weeks = 2) {
   return dailyMap;
 }
 
-module.exports = { mergeIntervals, invertIntervals, findAvailableTimes };
+function getBusyHours(events, weeks = 2) {
+  const wakingHour = 7;
+  const nightHour= 18;
+  const mins = 60;
+
+  var mappedHours = new Map();
+  var timeTable = [];
+
+  for (let i = 0; i < events.length; i++) {
+    var end = events[i].end % mins;
+    var start = events[i].start % mins;
+
+    if ( start >= wakingHour && end < nightHour) {
+      for (let s = start; s < end; s++) {
+        next = mapHours.get(s);
+        mapHours.set(s, next ? next++ : 1);
+      }
+    }
+  }
+
+  for (var [hour, amount] of mappedHours.entries) {
+    timeTable.push([hour, amount]);
+  }
+  timeTable.sort( (a, b) => a[1] - b[1] );
+  return timeTable;
+}
+
+// function suggestATime(events, day) {}
+
+/* input: date object
+ * output: iso date times - specifically san diego
+function convertToLocalTime() 
+*/
+
+// function dateToPST(utc) {
+//   var newDate = new Date();
+//   newDate.setDate(()
+
+/* input: given a start, end times
+ * output: free time in 30min segements */
+// function poolInterval(interval) {
+
+  module.exports = { mergeIntervals, invertIntervals, findAvailableTimes, findBusiestThree, suggestATime };
